@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KARNIVULGAR // POST-HUMAN ERA // LIVE CHAT</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-    <!-- Firebase SDKs (9+ modular style) -->
+    <!-- Firebase SDKs -->
     <script type="importmap">
         {
             "imports": {
@@ -26,17 +26,28 @@
             background-color: var(--bg-color);
             color: var(--matrix-green);
             font-family: 'VT323', monospace;
-            margin: 0; padding: 0; overflow-x: hidden;
-            display: flex; flex-direction: column; align-items: center;
-            text-shadow: 0 0 5px rgba(0, 255, 65, 0.5); 
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
             position: relative;
+            min-height: 100vh;
         }
 
         .scanlines {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
                         linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 4px, 3px 100%; z-index: 100; pointer-events: none;
+            background-size: 100% 4px, 3px 100%;
+            z-index: 100;
+            pointer-events: none;
         }
 
         /* ----- INDUSTRIAL ACCENTS ----- */
@@ -77,8 +88,11 @@
         }
 
         header {
-            text-align: center; margin-top: 50px; margin-bottom: 30px;
-            width: 100%; max-width: 800px;
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 800px;
         }
 
         .mask-container {
@@ -105,23 +119,31 @@
 
         h1 {
             font-size: 4rem;
-            margin: 0; letter-spacing: 2px;
-            border-bottom: 2px dashed var(--dark-green); padding-bottom: 10px;
+            margin: 0;
+            letter-spacing: 2px;
+            border-bottom: 2px dashed var(--dark-green);
+            padding-bottom: 10px;
             animation: rupture 6.5s infinite;
         }
 
-        .sys-info { color: var(--dark-green); font-size: 1.5rem; margin-top: 10px; }
+        .sys-info {
+            color: var(--dark-green);
+            font-size: 1.5rem;
+            margin-top: 10px;
+        }
 
         main {
-            width: 100%; max-width: 700px;
+            width: 100%;
+            max-width: 700px;
             padding: 0 20px;
             box-sizing: border-box;
             margin-bottom: 50px;
+            flex: 1;
         }
 
-        /* ----- CHAT SECTION (styled to match terminal) ----- */
+        /* ----- CHAT SECTION (terminal style) ----- */
         .chat-container {
-            margin: 40px 0 30px;
+            margin: 20px 0 30px;
             border: 1px solid var(--dark-green);
             background: rgba(0, 143, 17, 0.05);
             padding: 15px;
@@ -144,7 +166,7 @@
         }
 
         #chat-messages {
-            height: 300px;
+            height: 350px;
             overflow-y: auto;
             background: rgba(0,0,0,0.6);
             padding: 10px;
@@ -209,38 +231,15 @@
             text-shadow: none;
         }
 
-        .directory-header {
-            font-size: 1.8rem; margin-bottom: 20px; color: #fff;
-            text-shadow: 0 0 5px #fff; position: relative; display: inline-block;
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
 
-        .directory-header::after {
-            content: "C:\\KARNIVULGAR\\AUDIO_ARCHIVE> DIR";
-            position: absolute; left: 3px; top: 2px;
-            color: rgba(255, 0, 60, 0.6); opacity: 0.8; z-index: -1; pointer-events: none;
-            clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%); 
-        }
-
-        ul.track-list { list-style-type: none; padding: 0; margin: 0; }
-        li.track {
-            opacity: 0; transform: translateX(-10px);
-            transition: opacity 0.2s ease-out, transform 0.2s ease-out;
-            margin: 20px 0; padding: 10px; border: 1px solid var(--dark-green);
-            background: rgba(0, 143, 17, 0.05);
-        }
-        li.track.system-loaded { opacity: 1; transform: translateX(0); }
-        li.track:hover { border: 1px solid var(--matrix-green); background: rgba(0, 255, 65, 0.1); }
-        .track-header { font-size: 1.6rem; margin-bottom: 10px; display: flex; align-items: center; }
-        .index { color: var(--dark-green); margin-right: 15px; min-width: 40px; }
-        .title { color: var(--matrix-green); flex-grow: 1; }
-        .embed-container iframe { width: 100%; height: 42px; border: 0; }
-        .cd-only { color: #555; flex-grow: 1; text-decoration: line-through; }
-        .status.offline { color: #ff003c; animation: blink 2s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        @media (max-width: 600px) { 
-            h1 { font-size: 2.8rem; } 
-            .track-header { font-size: 1.2rem; flex-wrap: wrap; }
+        @media (max-width: 600px) {
+            h1 { font-size: 2.8rem; }
             .accent { font-size: 0.6rem; }
+            .chat-header { font-size: 1.1rem; }
         }
     </style>
 </head>
@@ -268,22 +267,7 @@
 </header>
 
 <main>
-    <div class="directory-header">C:\KARNIVULGAR\AUDIO_ARCHIVE> DIR</div>
-    <ul class="track-list">
-        <!-- your 10 releases, same as before -->
-        <li class="track"><div class="track-header"><span class="index"></span><span class="title">500 Seconds of Dying</span></div><div class="embed-container"><iframe style="border:0; width:100%; height:42px;" src="https://bandcamp.com/EmbeddedPlayer/album=3496715889/size=small/bgcol=050505/linkcol=00FF41/transparent=true/" seamless></iframe></div></li>
-        <li class="track"><div class="track-header"><span class="index"></span><span class="title">Atmosfer</span></div><div class="embed-container"><iframe style="border:0; width:100%; height:42px;" src="https://bandcamp.com/EmbeddedPlayer/album=3017188116/size=small/bgcol=050505/linkcol=00FF41/transparent=true/" seamless></iframe></div></li>
-        <li class="track"><div class="track-header"><span class="index"></span><span class="title">Nevertheless</span></div><div class="embed-container"><iframe style="border:0; width:100%; height:42px;" src="https://bandcamp.com/EmbeddedPlayer/album=509872254/size=small/bgcol=050505/linkcol=00FF41/transparent=true/" seamless></iframe></div></li>
-        <li class="track" style="background: transparent; border-color: #333;"><div class="track-header" style="margin-bottom:0;"><span class="index" style="color:#333;"></span><span class="cd-only">Atmosfer B-Side</span><span class="status offline">[PHYSICAL_CD_ONLY]</span></div></li>
-        <li class="track"><div class="track-header"><span class="index"></span><span class="title">Indonesia Japan Noise Split</span></div><div class="embed-container"><iframe style="border:0; width:100%; height:42px;" src="https://bandcamp.com/EmbeddedPlayer/album=109849853/size=small/bgcol=050505/linkcol=00FF41/track=2205897231/transparent=true/" seamless></iframe></div></li>
-        <li class="track"><div class="track-header"><span class="index"></span><span class="title">Deathmatch</span></div><div class="embed-container"><iframe style="border:0; width:100%; height:42px;" src="https://bandcamp.com/EmbeddedPlayer/album=1936779237/size=small/bgcol=050505/linkcol=00FF41/transparent=true/" seamless></iframe></div></li>
-        <li class="track"><div class="track-header"><span class="index"></span><span class="title">Orbital Chamber (split with I,Eternal)</span></div><div class="embed-container"><iframe style="border:0; width:100%; height:42px;" src="https://bandcamp.com/EmbeddedPlayer/album=4076777043/size=small/bgcol=050505/linkcol=00FF41/transparent=true/" seamless></iframe></div></li>
-        <li class="track"><div class="track-header"><span class="index"></span><span class="title">Terjebak</span></div><div class="embed-container"><iframe style="border:0; width:100%; height:42px;" src="https://bandcamp.com/EmbeddedPlayer/album=879335001/size=small/bgcol=050505/linkcol=00FF41/transparent=true/" seamless></iframe></div></li>
-        <li class="track"><div class="track-header"><span class="index"></span><span class="title">Punch Lines! (split with Abiboss)</span></div><div class="embed-container"><iframe style="border:0; width:100%; height:42px;" src="https://bandcamp.com/EmbeddedPlayer/album=1450025827/size=small/bgcol=050505/linkcol=00FF41/track=3573633747/transparent=true/" seamless></iframe></div></li>
-        <li class="track"><div class="track-header"><span class="index"></span><span class="title">Rood Lleh, Mlaer fo Kcarc Eht</span></div><div class="embed-container"><iframe style="border:0; width:100%; height:42px;" src="https://bandcamp.com/EmbeddedPlayer/track=4090635045/size=small/bgcol=050505/linkcol=00FF41/transparent=true/" seamless></iframe></div></li>
-    </ul>
-
-    <!-- ========= LIVE CHAT SECTION ========= -->
+    <!-- ========= LIVE CHAT SECTION (no tracks) ========= -->
     <div class="chat-container">
         <div class="chat-header">
             <span>> LIVE_CHAT // ARTIST_TALK</span>
@@ -302,7 +286,6 @@
 
 <script type="module">
     // ---------- FIREBASE CONFIGURATION ----------
-    // 🔴 REPLACE the placeholder object below with YOUR Firebase project config.
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyAlrUnc2ql8HNNGBoqE3uPtBSD_QcNhyVc",
@@ -340,18 +323,15 @@ const firebaseConfig = {
         if (user) {
             currentUser = user;
             chatStatus.innerText = "[CONNECTED // ANON]";
-            // start listening to messages
             listenForMessages();
         } else {
             chatStatus.innerText = "[DISCONNECTED]";
         }
     });
 
-    // Listen for real-time messages
     const listenForMessages = () => {
         const q = query(collection(db, "chat_messages"), orderBy("timestamp", "asc"));
         onSnapshot(q, (snapshot) => {
-            // clear display and repopulate (simplistic, but works)
             chatMessagesDiv.innerHTML = "";
             snapshot.forEach((doc) => {
                 const data = doc.data();
@@ -366,12 +346,10 @@ const firebaseConfig = {
                 `;
                 chatMessagesDiv.appendChild(messageEl);
             });
-            // auto-scroll to bottom
             chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
         });
     };
 
-    // Send message
     const sendMessage = async () => {
         const text = chatInput.value.trim();
         if (!text || !currentUser) return;
@@ -379,7 +357,7 @@ const firebaseConfig = {
             await addDoc(collection(db, "chat_messages"), {
                 text: text,
                 uid: currentUser.uid,
-                userName: null,   // could be set later if you want custom names; Firebase keeps anon
+                userName: null,
                 timestamp: serverTimestamp()
             });
             chatInput.value = "";
@@ -402,14 +380,6 @@ const firebaseConfig = {
             return m;
         });
     }
-
-    // (existing DOMContentLoaded for track animations)
-    document.addEventListener("DOMContentLoaded", () => {
-        const tracks = document.querySelectorAll('.track');
-        tracks.forEach((track, idx) => {
-            setTimeout(() => track.classList.add('system-loaded'), idx * 150 + Math.random() * 600);
-        });
-    });
 </script>
 <script type="module">
   // Import the functions you need from the SDKs you need
