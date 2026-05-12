@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KARNIVULGAR // POST-HUMAN ERA // LIVE CHAT</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <!-- Firebase SDKs (9+ modular style) -->
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --matrix-green: #00FF41;
+            --dark-green: #008F11;
+            --bg-color: #050505;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--matrix-green);
+            font-family: 'VT323', monospace;
+            margin: 0; padding: 0; overflow-x: hidden;
+            display: flex; flex-direction: column; align-items: center;
+            text-shadow: 0 0 5px rgba(0, 255, 65, 0.5); 
+            position: relative;
+        }
+
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 3px 100%; z-index: 100; pointer-events: none;
+        }
+
+        /* ----- INDUSTRIAL ACCENTS ----- */
+        .accent {
+            position: fixed;
+            font-family: 'VT323', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 0.2rem 0.6rem;
+            color: var(--dark-green);
+            border-left: 2px solid var(--matrix-green);
+            z-index: 200;
+            pointer-events: none;
+            white-space: nowrap;
+            text-shadow: none;
+        }
+        .accent-top-left { top: 12px; left: 12px; }
+        .accent-top-right { top: 12px; right: 12px; border-left: none; border-right: 2px solid var(--matrix-green); text-align: right; }
+        .accent-bottom-left { bottom: 12px; left: 12px; }
+        .accent-bottom-right { bottom: 12px; right: 12px; border-left: none; border-right: 2px solid var(--matrix-green); text-align: right; }
+
+        .specimen-strip {
+            position: relative;
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: -10px;
+            margin-bottom: 5px;
+            color: var(--dark-green);
+            letter-spacing: 1.5px;
+            background: rgba(0,0,0,0.5);
+            display: inline-block;
+            padding: 0.1rem 0.8rem;
+            border-radius: 0;
+            border-top: 1px solid var(--matrix-green);
+            border-bottom: 1px solid var(--matrix-green);
+            transform: rotate(-1deg);
+        }
+
+        header {
+            text-align: center; margin-top: 50px; margin-bottom: 30px;
+            width: 100%; max-width: 800px;
+        }
+
+        .mask-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: -10px;
+        }
+
+        .mask-artifact {
+            max-width: 250px;
+            height: auto;
+            image-rendering: pixelated;
+            filter: drop-shadow(0 0 8px var(--matrix-green));
+        }
+
+        @keyframes rupture {
+            0%, 96% { transform: skew(0deg); text-shadow: 0 0 5px rgba(0, 255, 65, 0.5); }
+            97% { transform: skew(20deg); text-shadow: -4px 0 #ff003c, 4px 0 #0000ff; letter-spacing: -3px; }
+            98% { transform: skew(-15deg); text-shadow: 3px 0 var(--matrix-green), -3px 0 #fff; }
+            99% { transform: skew(5deg); text-shadow: -2px 0 #ff003c; letter-spacing: 5px; }
+            100% { transform: skew(0deg); text-shadow: 0 0 5px rgba(0, 255, 65, 0.5); }
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin: 0; letter-spacing: 2px;
+            border-bottom: 2px dashed var(--dark-green); padding-bottom: 10px;
+            animation: rupture 6.5s infinite;
+        }
+
+        .sys-info { color: var(--dark-green); font-size: 1.5rem; margin-top: 10px; }
+
+        main {
+            width: 100%; max-width: 700px;
+            padding: 0 20px;
+            box-sizing: border-box;
+            margin-bottom: 50px;
+        }
+
+        /* ----- CHAT SECTION (styled to match terminal) ----- */
+        .chat-container {
+            margin: 40px 0 30px;
+            border: 1px solid var(--dark-green);
+            background: rgba(0, 143, 17, 0.05);
+            padding: 15px;
+            border-radius: 4px;
+        }
+
+        .chat-header {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            border-bottom: 1px dashed var(--dark-green);
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+        }
+
+        .chat-status {
+            font-size: 0.8rem;
+            color: var(--dark-green);
+        }
+
+        #chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.6);
+            padding: 10px;
+            margin-bottom: 12px;
+            font-size: 1rem;
+            border: 1px solid #1f4f1a;
+        }
+
+        .message {
+            margin-bottom: 8px;
+            word-wrap: break-word;
+            border-left: 2px solid var(--matrix-green);
+            padding-left: 8px;
+        }
+
+        .message-user {
+            color: #bbff99;
+            font-weight: bold;
+        }
+
+        .message-time {
+            color: #558855;
+            font-size: 0.7rem;
+            margin-left: 8px;
+        }
+
+        .message-text {
+            color: #ccffcc;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        #chat-input {
+            flex: 1;
+            background: black;
+            border: 1px solid var(--matrix-green);
+            color: var(--matrix-green);
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem;
+            padding: 8px;
+            outline: none;
+        }
+
+        #chat-send {
+            background: #0a2a0a;
+            border: 1px solid var(--matrix-green);
+            color: var(--matrix-green);
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        #chat-send:hover {
+            background: var(--matrix-green);
+            color: black;
+            text-shadow: none;
+        }
+
+        .directory-header {
+            font-size: 1.8rem; margin-bottom: 20px; color: #fff;
+            text-shadow: 0 0 5px #fff; position: relative; display: inline-block;
+        }
+
+        .directory-header::after {
+            content: "C:\\KARNIVULGAR\\AUDIO_ARCHIVE> DIR";
+            position: absolute; left: 3px; top: 2px;
+            color: rgba(255, 0, 60, 0.6); opacity: 0.8; z-index: -1; pointer-events: none;
+            clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%); 
+        }
+
+        ul.track-list { list-style-type: none; padding: 0; margin: 0; }
+        li.track {
+            opacity: 0; transform: translateX(-10px);
+            transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+            margin: 20px 0; padding: 10px; border: 1px solid var(--dark-green);
+            background: rgba(0, 143, 17, 0.05);
+        }
+        li.track.system-loaded { opacity: 1; transform: translateX(0); }
+        li.track:hover { border: 1px solid var(--matrix-green); background: rgba(0, 255, 65, 0.1); }
+        .track-header { font-size: 1.6rem; margin-bottom: 10px; display: flex; align-items: center; }
+        .index { color: var(--dark-green); margin-right: 15px; min-width: 40px; }
+        .title { color: var(--matrix-green); flex-grow: 1; }
+        .embed-container iframe { width: 100%; height: 42px; border: 0; }
+        .cd-only { color: #555; flex-grow: 1; text-decoration: line-through; }
+        .status.offline { color: #ff003c; animation: blink 2s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        @media (max-width: 600px) { 
+            h1 { font-size: 2.8rem; } 
+            .track-header { font-size: 1.2rem; flex-wrap: wrap; }
+            .accent { font-size: 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="scanlines"></div>
+
+<!-- fixed industrial accents -->
+<div class="accent accent-top-left">MEM FA1345</div>
+<div class="accent accent-top-right">L1.3459 // L2.8658</div>
+<div class="accent accent-bottom-left">CAL: 05/26 // V.3</div>
+<div class="accent accent-bottom-right">ARCHIVE :: POST-HUMAN</div>
+
+<header>
+    <div class="mask-container">
+        <div class="specimen-strip">SPECIMEN REF: MEM // FA1345 // L1.3459</div>
+        <img src="mask_artifact.png" alt="POST-HUMAN MASK ARTIFACT" class="mask-artifact">
+    </div>
+    <h1>POST-HUMAN ERA</h1>
+    <h2>a showcase by Karnivulgar</h2>
+    <h3><span style="color: var(--matrix-green); animation: blink 0.7s infinite;">Post-Human Era is not an exhibition but a system in transition. Through noise, rupture, and visual fragments, it maps the erosion of human centrality. This repository contains traces, structures, and unstable documentation.</span></h3>
+    <div class="sys-info">
+        LOC: WISMA_JERMAN // SBY<br>
+        DAT: 21-23_MEI_2026 // SYSTEM_ACTIVE
+    </div>
+</header>
+
+<main>
+    <div class="directory-header">C:\KARNIVULGAR\AUDIO_ARCHIVE> DIR</div>
+    <ul class="track-list">
+        <!-- your 10 releases, same as before -->
+        <li class="track"><div class="track-header"><span class="index"></span><span class="title">500 Seconds of Dying</span></div><div class="embed-container"><iframe style="border:0; width:100%; height:42px;" src="https://bandcamp.com/EmbeddedPlayer/album=3496715889/size=small/bgcol=050505/linkcol=00FF41/transparent=true/" seamless></iframe></div></li>
+        <li class="track"><div class="track-header"><span class="index"></span><span class="title">Atmosfer</span></div><div class="embed-container"><iframe style="border:0; width:100%; height:42px;" src="https://bandcamp.com/EmbeddedPlayer/album=3017188116/size=small/bgcol=050505/linkcol=00FF41/transparent=true/" seamless></iframe></div></li>
+        <li class="track"><div class="track-header"><span class="index"></span><span class="title">Nevertheless</span></div><div class="embed-container"><iframe style="border:0; width:100%; height:42px;" src="https://bandcamp.com/EmbeddedPlayer/album=509872254/size=small/bgcol=050505/linkcol=00FF41/transparent=true/" seamless></iframe></div></li>
+        <li class="track" style="background: transparent; border-color: #333;"><div class="track-header" style="margin-bottom:0;"><span class="index" style="color:#333;"></span><span class="cd-only">Atmosfer B-Side</span><span class="status offline">[PHYSICAL_CD_ONLY]</span></div></li>
+        <li class="track"><div class="track-header"><span class="index"></span><span class="title">Indonesia Japan Noise Split</span></div><div class="embed-container"><iframe style="border:0; width:100%; height:42px;" src="https://bandcamp.com/EmbeddedPlayer/album=109849853/size=small/bgcol=050505/linkcol=00FF41/track=2205897231/transparent=true/" seamless></iframe></div></li>
+        <li class="track"><div class="track-header"><span class="index"></span><span class="title">Deathmatch</span></div><div class="embed-container"><iframe style="border:0; width:100%; height:42px;" src="https://bandcamp.com/EmbeddedPlayer/album=1936779237/size=small/bgcol=050505/linkcol=00FF41/transparent=true/" seamless></iframe></div></li>
+        <li class="track"><div class="track-header"><span class="index"></span><span class="title">Orbital Chamber (split with I,Eternal)</span></div><div class="embed-container"><iframe style="border:0; width:100%; height:42px;" src="https://bandcamp.com/EmbeddedPlayer/album=4076777043/size=small/bgcol=050505/linkcol=00FF41/transparent=true/" seamless></iframe></div></li>
+        <li class="track"><div class="track-header"><span class="index"></span><span class="title">Terjebak</span></div><div class="embed-container"><iframe style="border:0; width:100%; height:42px;" src="https://bandcamp.com/EmbeddedPlayer/album=879335001/size=small/bgcol=050505/linkcol=00FF41/transparent=true/" seamless></iframe></div></li>
+        <li class="track"><div class="track-header"><span class="index"></span><span class="title">Punch Lines! (split with Abiboss)</span></div><div class="embed-container"><iframe style="border:0; width:100%; height:42px;" src="https://bandcamp.com/EmbeddedPlayer/album=1450025827/size=small/bgcol=050505/linkcol=00FF41/track=3573633747/transparent=true/" seamless></iframe></div></li>
+        <li class="track"><div class="track-header"><span class="index"></span><span class="title">Rood Lleh, Mlaer fo Kcarc Eht</span></div><div class="embed-container"><iframe style="border:0; width:100%; height:42px;" src="https://bandcamp.com/EmbeddedPlayer/track=4090635045/size=small/bgcol=050505/linkcol=00FF41/transparent=true/" seamless></iframe></div></li>
+    </ul>
+
+    <!-- ========= LIVE CHAT SECTION ========= -->
+    <div class="chat-container">
+        <div class="chat-header">
+            <span>> LIVE_CHAT // ARTIST_TALK</span>
+            <span class="chat-status" id="chat-status">[INITIALIZING]</span>
+        </div>
+        <div id="chat-messages"></div>
+        <div class="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Type your message... (anonymous)" autocomplete="off">
+            <button id="chat-send">SEND</button>
+        </div>
+        <div style="font-size:0.7rem; margin-top:8px; text-align:center; color:#2c6e2c;">⚡ anonymous · no login required · real‑time</div>
+    </div>
+</main>
+
+<center><p>2026 - karnivulgar - def-n networks / lantai dua studio - wisma jerman - goethe institut</p></center>
+
+<script type="module">
+    // ---------- FIREBASE CONFIGURATION ----------
+    // 🔴 REPLACE the placeholder object below with YOUR Firebase project config.
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyAlrUnc2ql8HNNGBoqE3uPtBSD_QcNhyVc",
+  authDomain: "karnivulgar-chat.firebaseapp.com",
+  projectId: "karnivulgar-chat",
+  storageBucket: "karnivulgar-chat.firebasestorage.app",
+  messagingSenderId: "304781360435",
+  appId: "1:304781360435:web:9231a7ebf00be69d06d246",
+  measurementId: "G-8LEKG317TK"
+};
+    // ---------------------------------------------
+
+    import { initializeApp } from "firebase/app";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "firebase/firestore";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const chatMessagesDiv = document.getElementById("chat-messages");
+    const chatInput = document.getElementById("chat-input");
+    const chatSend = document.getElementById("chat-send");
+    const chatStatus = document.getElementById("chat-status");
+
+    let currentUser = null;
+
+    // --- Anonymous sign-in
+    signInAnonymously(auth).catch(error => {
+        console.error("Auth error", error);
+        chatStatus.innerText = "[ERROR: AUTH FAILED]";
+    });
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            currentUser = user;
+            chatStatus.innerText = "[CONNECTED // ANON]";
+            // start listening to messages
+            listenForMessages();
+        } else {
+            chatStatus.innerText = "[DISCONNECTED]";
+        }
+    });
+
+    // Listen for real-time messages
+    const listenForMessages = () => {
+        const q = query(collection(db, "chat_messages"), orderBy("timestamp", "asc"));
+        onSnapshot(q, (snapshot) => {
+            // clear display and repopulate (simplistic, but works)
+            chatMessagesDiv.innerHTML = "";
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                const messageEl = document.createElement("div");
+                messageEl.classList.add("message");
+                const userName = data.userName || "anonymous_" + data.uid.slice(-5);
+                const time = data.timestamp ? data.timestamp.toDate().toLocaleTimeString() : "";
+                messageEl.innerHTML = `
+                    <span class="message-user">${escapeHtml(userName)}</span>
+                    <span class="message-time">${time}</span>
+                    <div class="message-text">${escapeHtml(data.text)}</div>
+                `;
+                chatMessagesDiv.appendChild(messageEl);
+            });
+            // auto-scroll to bottom
+            chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+        });
+    };
+
+    // Send message
+    const sendMessage = async () => {
+        const text = chatInput.value.trim();
+        if (!text || !currentUser) return;
+        try {
+            await addDoc(collection(db, "chat_messages"), {
+                text: text,
+                uid: currentUser.uid,
+                userName: null,   // could be set later if you want custom names; Firebase keeps anon
+                timestamp: serverTimestamp()
+            });
+            chatInput.value = "";
+        } catch (err) {
+            console.error("Send error", err);
+            chatStatus.innerText = "[ERROR: SEND FAILED]";
+        }
+    };
+
+    chatSend.addEventListener("click", sendMessage);
+    chatInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendMessage();
+    });
+
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === "&") return "&amp;";
+            if (m === "<") return "&lt;";
+            if (m === ">") return "&gt;";
+            return m;
+        });
+    }
+
+    // (existing DOMContentLoaded for track animations)
+    document.addEventListener("DOMContentLoaded", () => {
+        const tracks = document.querySelectorAll('.track');
+        tracks.forEach((track, idx) => {
+            setTimeout(() => track.classList.add('system-loaded'), idx * 150 + Math.random() * 600);
+        });
+    });
+</script>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyAlrUnc2ql8HNNGBoqE3uPtBSD_QcNhyVc",
+    authDomain: "karnivulgar-chat.firebaseapp.com",
+    projectId: "karnivulgar-chat",
+    storageBucket: "karnivulgar-chat.firebasestorage.app",
+    messagingSenderId: "304781360435",
+    appId: "1:304781360435:web:9231a7ebf00be69d06d246",
+    measurementId: "G-8LEKG317TK"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+</body>
+</html>
